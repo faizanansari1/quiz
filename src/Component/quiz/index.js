@@ -45,11 +45,6 @@ export default class Quiz extends Component {
         }
 
     }
-    handleChange = (value) => {
-        // this.setState({ vlaue });
-    };
-
-
     render() {
         const desc = ['easy', 'medium', 'hard'];
         const { questions, index, value } = this.state;
@@ -67,10 +62,8 @@ export default class Quiz extends Component {
                         <p>{questions.length > 0 && unescape(questions[index].category)}</p>
 
                         <span>
-                            
                             <Rate tooltips={desc} value={value} />
                             { questions.length > 0 && unescape(questions[index].difficulty)}
-                            {/* {value ? <span className="ant-rate-text">{desc[value - 1]}</span> : ''} */}
                             </span>
                     </div>
 
@@ -84,14 +77,6 @@ export default class Quiz extends Component {
                                 <button key={index} className="awnser-btn" onClick={() => this.getAnswer(item)}>{unescape(item)}</button>
                             )
                         })}
-                        {/* <div className="buttons">
-                            <button>Electric Company</button>
-                            <button>Electric Company</button>
-                        </div>
-                        <div className="buttons">
-                            <button>Electric Company</button>
-                            <button>Electric Company</button>
-                        </div> */}
                     </div>
 
                     <div className="result-section">
