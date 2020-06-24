@@ -17,7 +17,7 @@ export default class Quiz extends Component {
 
 
     componentDidMount() {
-        const { index, questions } = this.state;
+        const { index } = this.state;
         Axios.get('https://demo4757926.mockable.io/question').then((response) => {
             const allanswers = response.data[index].answers.sort(() => Math.random() - 0.5);
             this.setState({ questions: response.data, allanswers });
@@ -44,7 +44,6 @@ export default class Quiz extends Component {
         } else {
             this.setState({ correct: 'Sorry!' })
         }
-
     }
 
     render() {
@@ -54,7 +53,7 @@ export default class Quiz extends Component {
                 {questions.length > 0 && <div>
                     <div className="header">
                         <div className="logo">
-                            <img src="https://raw.githubusercontent.com/Expertizo/React-Tet/master/Expertizo-logo.png" alt="logo" />
+                            <img src={require('../Images/Expertizo-logo.png')} alt="logo" />
                         </div>
                     </div>
                     <div className="content">
@@ -69,7 +68,6 @@ export default class Quiz extends Component {
                                             : 3}
                                     disabled
                                 />
-                                {/* {value ? <span className="anst-rate-text">{desc[value - 1]}</span> : ''} */}
                             </span>
                         </div>
 
@@ -81,9 +79,8 @@ export default class Quiz extends Component {
                             {allanswers.map((item, index) => {
                                 return (
                                     <button key={index} className="awnser-btn" onClick={() => this.getAnswer(item)}>{unescape(item)}</button>
-                                )
+                                );
                             })}
-
                         </div>
 
                         <div className="result-section">
@@ -91,7 +88,6 @@ export default class Quiz extends Component {
                             <Button className="next-btn" onClick={this.onNext}>Next Question</Button>
 
                         </div>
-
                     </div>
                 </div>}
             </div>
