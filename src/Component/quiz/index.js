@@ -11,28 +11,29 @@ export default class Quiz extends Component {
             questions: [],
             index: 0,
             correct: '',
-            value: 3,
+            allanswers: []
         }
     }
 
 
     componentDidMount() {
+        const { index, questions } = this.state;
         Axios.get('https://demo4757926.mockable.io/question').then((response) => {
-            if (response.data) {
-                this.setState({ questions: response.data }, () => {
-                    console.log('My QUESTIONS:', unescape(this.state.questions[0].question))
-                })
-            }
+            const allanswers = response.data[index].answers.sort(() => Math.random() - 0.5);
+            this.setState({ questions: response.data, allanswers });
         }).catch(err => console.log(err))
     }
 
     onNext = () => {
-        const { index } = this.state;
+        const { index, questions } = this.state;
 
-        if(index < 20){
-            this.setState({index: index + 1, correct: '',})
+        if (index < 20) {
+            this.setState({ index: index + 1, correct: '' }, () => {
+                const allanswers = questions[this.state.index].answers.sort(() => Math.random() - 0.5);
+                this.setState({ allanswers })
+            })
         }
-        
+
     }
     getAnswer = (answer) => {
         const { questions, index } = this.state;
@@ -45,47 +46,54 @@ export default class Quiz extends Component {
         }
 
     }
+
     render() {
-        const desc = ['easy', 'medium', 'hard'];
-        const { questions, index, value } = this.state;
+        const { questions, index, allanswers } = this.state;
         return (
-
             <div>
-                <div className="header">
-                    <div className="logo">
-                        <img src="https://raw.githubusercontent.com/Expertizo/React-Test/master/Expertizo-logo.png" alt="logo" />
+                {questions.length > 0 && <div>
+                    <div className="header">
+                        <div className="logo">
+                            <img src="https://raw.githubusercontent.com/Expertizo/React-Tet/master/Expertizo-logo.png" alt="logo" />
+                        </div>
                     </div>
-                </div>
-                <div className="content">
-                    <div className="heading-section" >
-                        <h1>Question {index + 1} of {questions.length}</h1>
-                        <p>{questions.length > 0 && unescape(questions[index].category)}</p>
+                    <div className="content">
+                        <div className="heading-section" >
+                            <h1>Question {index + 1} of {questions.length}</h1>
+                            <p>{unescape(questions[index].category)}</p>
+                            <span>
 
-                        <span>
-                            <Rate tooltips={desc} value={value} />
-                            { questions.length > 0 && unescape(questions[index].difficulty)}
+                                <Rate
+                                    value={questions[index].difficulty === "easy" ? 1
+                                        : questions[index].difficulty === "medium" ? 2
+                                            : 3}
+                                    disabled
+                                />
+                                {/* {value ? <span className="anst-rate-text">{desc[value - 1]}</span> : ''} */}
                             </span>
+                        </div>
+
+                        <div className="question-section">
+                            <h4>{unescape(questions[index].question)}</h4>
+                        </div>
+                        <div className="awnser-options">
+
+                            {allanswers.map((item, index) => {
+                                return (
+                                    <button key={index} className="awnser-btn" onClick={() => this.getAnswer(item)}>{unescape(item)}</button>
+                                )
+                            })}
+
+                        </div>
+
+                        <div className="result-section">
+                            <h2>{this.state.correct}</h2>
+                            <Button className="next-btn" onClick={this.onNext}>Next Question</Button>
+
+                        </div>
+
                     </div>
-
-                    <div className="question-section">
-                        <h4>{questions.length > 0 && unescape(questions[index].question)}</h4>
-                    </div>
-                    <div className="awnser-options">
-
-                        {questions.length > 0 && questions[index].answers.sort(() => Math.random() - 0.5).map((item, index) => {
-                            return (
-                                <button key={index} className="awnser-btn" onClick={() => this.getAnswer(item)}>{unescape(item)}</button>
-                            )
-                        })}
-                    </div>
-
-                    <div className="result-section">
-                        <h2>{this.state.correct}</h2>
-                        <Button className="next-btn"  onClick={this.onNext}>Next Question</Button>
-
-                    </div>
-
-                </div>
+                </div>}
             </div>
         );
     }
